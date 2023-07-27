@@ -151,26 +151,38 @@ def show_exam_result(request, course_id, submission_id):
     grade = 0
     context = {}
     
+    new_course = []
+    new_submission = []
+    new_questions = []
 
     colors = []
     for question in course.question_set.all():
+        question.something = "test"
         #print(question)
+        q_colors = []
+        new_choices = []
         for choice in question.choice_set.all():
             #print(choice)
             #colors.append("green")
-            color = "gray"
+            color = "black"
             for my_choice in submission.choices.all():
                 if choice.id == my_choice.id and choice.is_correct:
                     color = "green"
 
-            if color == "gray" and choice.is_correct:
+            if color == "black" and choice.is_correct:
                 color = "orange"
-            colors.append(color)
+
+            new_choices.append({'choice': choice, 'color': color})
+            q_colors.append(color)
             setattr(choice, 'color', color)
             #choice["color"] = color
             print(choice)
+        colors.append(q_colors)
+        print("AAA", new_choices, "AAA")
+        new_questions.append({'question': question, 'choices': new_choices})
     
     print(colors)
+    print("BBB", new_questions)
 
 
     for choice in submission.choices.all():
@@ -182,6 +194,7 @@ def show_exam_result(request, course_id, submission_id):
     context["submission"]  =  submission
     context["grade"] = grade * 10
     context["colors"] = colors
+    context["new_questions"] = new_questions
     print(context)
     
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)

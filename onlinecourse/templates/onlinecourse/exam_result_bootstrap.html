@@ -51,33 +51,23 @@
         <div class="card-columns-vertical mt-1">
         <h5 class="">Exam results</h5>
             <!--HINT Display exam results-->
-            {% for question in course.question_set.all %}
+            
+            {% for q in new_questions  %}
                 <div class="card mt-1">
-                    <div class="card-header"><h5>Question: {{ question.text}}</h5></div>
+                    <div class="card-header"><h5>Question: {{ q.question.text}}</h5></div>
                     {% csrf_token %}
                     <div class="form-group">
                         
-                        {% for choice in question.choice_set.all %}
-                        
+                        {% for c in q.choices %}
 
-                            {% for my_choice in submission.choices.all %}
-                                <!-- A{{ my_choice.text }}A -->
-                                {% if my_choice.id == choice.id and my_choice.is_correct %}
-                                    <p>Correct answer: {{ choice.text }}</p>
-                                {% endif %}
-                            {% endfor %}
+                        <p style="color: {{c.choice.color}}">
+                            {% if c.choice.color == "green" %}
+                                Correct answer:
+                            {% elif c.choice.color == "orange" %}
+                                Not selected:
+                            {% endif %}
+                            {{ c.choice.text }} </p>
 
-  
-                            <p>{{choice.text}} {{choice.color}}</p> 
-
-
-                            <!-- <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="checkbox" name="choice_{{choice.id}}"
-                                        class="form-check-input" id="{{choice.id}}"
-                                        value="{{choice.id}}">{{ choice.text }}
-                                </label>
-                            </div> -->
                         {% endfor %}
                     </div>
                 </div>
